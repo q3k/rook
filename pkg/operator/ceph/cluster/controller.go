@@ -594,6 +594,11 @@ func (c *ClusterController) handleUpdate(crdName string, cluster *cluster) (bool
 }
 
 func (c *ClusterController) onDeviceCMUpdate(oldObj, newObj interface{}) {
+	// skip forced resyncs
+	if reflect.DeepEqual(oldObj, newObj) {
+		return
+	}
+
 	_, ok := oldObj.(*v1.ConfigMap)
 	if !ok {
 		logger.Warningf("Expected ConfigMap but handler received %#v", oldObj)
